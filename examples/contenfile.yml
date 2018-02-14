@@ -1,0 +1,14 @@
+---
+- hosts: myhosts
+  tasks:
+  - name:
+    copy:
+      dest: '/tmp/contentfile'
+      content: |
+          a file from ansible
+          file from Shubham
+      mode: 0777
+      owner: shubham
+      group: shubham
+
+
