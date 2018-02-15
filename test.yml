@@ -1,0 +1,32 @@
+---
+- hosts: webservers
+  vars:
+    http_port: 80
+    max_clients: 200
+    doc_root: /var/www/html
+
+  tasks:
+  - name: ensure apache is at the latest version
+    yum:
+      name: httpd
+      state: latest
+
+  - name: Create custom document root
+    file: path={{ doc_root }} state=directory
+
+  - name: Set up HTML file
+    copy: src=index.hmtl dest={{ doc_root }}/index.html
+
+    notify:
+    - restart apache
+
+  - name: ensure apache is running
+    service:
+      name: httpd
+      state: started
+
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted

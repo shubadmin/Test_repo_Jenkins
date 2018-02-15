@@ -1,0 +1,8 @@
+---
+- hosts: myhosts
+  tasks:
+   - name: create a new file
+     file:
+       path: '/tmp/testfile'
+       state: touch
+
