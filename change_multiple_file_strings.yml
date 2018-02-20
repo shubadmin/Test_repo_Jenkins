@@ -1,0 +1,13 @@
+---
+- hosts: all
+  tasks:
+  - name: change multiple string in multiple files
+    replace:
+       path: '{{ item.path }}'
+       regexp: '{{ item.regexp }}'
+       replace: '{{ item.replace }}'
+    with_items:
+    - { path: '/tmp/testfile', regexp: 'ANSIBLE', replace: 'shubham' }
+    - { path: '/tmp/testfile', regexp: 'BLOCK', replace: 'CONTENT' }
+    - { path: '/tmp/shubham1', regexp: 'content', replace: 'block' }
+    - { path: '/tmp/shubham1', regexp: 'some', replace: 'most' }
