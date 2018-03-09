@@ -4,7 +4,7 @@
   vars:
     MySQL_root_pass: "Master@123"
   tasks:
-  - name: install LAMP
+  - name: install packages for Lamp
     yum:
      name: '{{ item }}'
      state: latest
@@ -16,7 +16,7 @@
     - php-mysql
     - php-pdo
     - php-gd
-#    - php-mbstring
+    - php-mbstring
     - wget
     - MySQL-python
 
@@ -29,6 +29,15 @@
     - { name: 'httpd', state: 'started', enabled: 'yes' }
     - { name: 'mariadb', state: 'started', enabled: 'yes' }
 
+#  - name: Sets the root password
+#    mysql_user:
+#      user: 'root'
+#      password: "{{ MySQL_root_pass }}"
+#      host: 'localhost'
+#      login_password: "Master@123"
+#      login_user: "root"
+
+
   - name: added entry in .my.cnf
     copy:
       dest: '/root/.my.cnf'
@@ -38,12 +47,8 @@
             password="Master@123"
   - name: Adds Python MySQL support on RedHat/CentOS
     yum: name=MySQL-python state=present
-    when: ansible_os_family == 'RedHat'
-  - name: Sets the root password
-    mysql_user:
-      user: 'root'
-      password: "{{ MySQL_root_pass }}"
-      host: 'localhost'
+#    when: ansible_os_family == 'RedHat'
+
   - name: Deletes anonymous MySQL server user for localhost
     mysql_user:
       user: ""
@@ -106,3 +111,22 @@
     - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', 'wpadmin');"}
     - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', 'hrn@123');"}
 
+  - name: Change Ownership of files and dir
+    file:
+       dest: /var/www/html
+       owner: apache 
+       group: apache
+       recurse: yes
+
+  - name: Ensure directories are 0755
+    command: 
+       find {{ /var/www/html }} -type d -exec chmod 0755 {} \;
+
+  - name: Ensure files are 0644
+    command: 
+       find {{ /var/www/html }} -type f -exec chmod 0644 {} \;
+
+  - name: Restart Apache
+    service:
+       name: httpd
+       state: restarted
