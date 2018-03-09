@@ -1,0 +1,5 @@
+---
+- hosts: myhosts
+  tasks:
+    - name: shutdown
+      command: /sbin/shutdown -h now
