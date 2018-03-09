@@ -1,0 +1,13 @@
+---
+- hosts: myhosts
+  tasks:
+  - name: Add database
+    mysql_db:
+        name: wordpress
+        state: present
+  - name: create db user
+    mysql_user:
+        name: wpadmin
+        password: 'hrn@123'
+        priv: 'wordpress.*:ALL'
+        state: present
