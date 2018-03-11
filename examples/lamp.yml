@@ -29,50 +29,54 @@
     - { name: 'httpd', state: 'started', enabled: 'yes' }
     - { name: 'mariadb', state: 'started', enabled: 'yes' }
 
-  - name: Sets the root password
+
+
+  - name: Adds Python MySQL support on RedHat/CentOS
+    yum: name=MySQL-python state=present
+
+  - name: Sets the root password 
     mysql_user:
-      user: 'root'
-      password: "{{ MySQL_root_pass }}"
-      host: 'localhost'
-      login_password: "Master@123"
-      login_user: "root"
+       check_implicit_admin: yes
+       login_user: root
+       login_password: "{{ MySQL_root_pass }}" 
+       user: 'root'
+       password: "{{ MySQL_root_pass }}"
+       host: 'localhost'
+
 
   - name: added entry in .my.cnf
     copy:
       dest: '/root/.my.cnf'
       content: |
-            [client]
-            user="root"
-            password="Master@123"
-
-  - name: Adds Python MySQL support on RedHat/CentOS
-    yum: name=MySQL-python state=present
+          [client]
+          user=root
+          password="Master@123"
 
   - name: Deletes anonymous MySQL server user for localhost
     mysql_user:
-      user: ""
-      state: "absent"
-      login_password: "{{ MySQL_root_pass }}"
-      login_user: "root"
-          
+       user: "" 
+       state: "absent"
+       login_password: "{{ MySQL_root_pass }}"
+       login_user: "root"
+
   - name: Secures the MySQL root user
-    mysql_user:
-      user: "root"
-      password: "{{ MySQL_root_pass }}"
-      host: "{{ item }}"
-      login_password: "{{MySQL_root_pass}}"
-      login_user: "root"
+    mysql_user: 
+       user: "root" 
+       password: "{{ MySQL_root_pass }}"
+       host: "{{ item }}"
+       login_password: "{{MySQL_root_pass}}"
+       login_user: "root"
     with_items:
       - 127.0.0.1
       - localhost
       - ::1
 
   - name: Removes the MySQL test database
-    mysql_db:
-      db: 'test'
-      state: 'absent'
-      login_password: "{{ MySQL_root_pass }}"
-      login_user: 'root'
+    mysql_db: 
+       db: 'test'
+       state: 'absent'
+       login_password: "{{ MySQL_root_pass }}"
+       login_user: 'root'
 
   - name: Add database
     mysql_db:
@@ -122,13 +126,14 @@
 
   - name: Ensure directories are 0755
     command: 
-       find {{ /var/www/html }} -type d -exec chmod 0755 {} \;
+       find  /var/www/html  -type d -exec chmod 0755 {} \;
 
   - name: Ensure files are 0644
     command: 
-       find {{ /var/www/html }} -type f -exec chmod 0644 {} \;
+       find  /var/www/html  -type f -exec chmod 0644 {} \;
 
   - name: Restart Apache
     service:
        name: httpd
        state: restarted
+
