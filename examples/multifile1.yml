@@ -1,0 +1,13 @@
+---
+- hosts: myhosts
+  tasks:
+  - name: create multiple files
+    file:
+      path: '{{ item.location }}'
+      state: touch
+      mode: '{{ item.mode }}'
+      owner: '{{ item.owner }}'
+      group: '{{ item.group }}'
+    with_items:
+    - { location: '/tmp/file5' mode: '0666' owner: 'shubham' group: 'shubham'}
+    - { location: '/tmp/file6' mode: '0444' owner: 'centos' group: 'centos'}

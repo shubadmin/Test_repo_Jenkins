@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: true
+  vars:
+       doc_root: /var/www/html
+  tasks:
+     - name: Install Apache
+       yum: name=httpd state=latest
+
+     - name: Create custom document root
+       file: path={{ doc_root }} state=directory 
+
+     - name: Set up HTML file
+       copy: src=index.html dest={{ doc_root }}/index.html mode=0644
+
+     - name: start httpd
+       service: name=httpd state=started enabled=yes

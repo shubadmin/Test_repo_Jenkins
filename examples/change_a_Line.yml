@@ -1,0 +1,9 @@
+---
+- hosts: myhosts
+  tasks:
+     - name: change a line
+       lineinfile:
+             path: '/etc/httpd/conf/httpd.conf'
+             regexp: '^Listen '
+             insertafter: '^#Listen '
+             line: 'Listen 8080'

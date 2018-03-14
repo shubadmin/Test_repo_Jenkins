@@ -1,0 +1,9 @@
+---
+- hosts: myhosts
+  tasks:
+     - name: Install mariadb
+       yum: name=mariadb state=latest
+       yum: name=mariadb-server state=latest
+
+     - name: Start Mariadb
+       service: name=mariadb state=started enabled=yes

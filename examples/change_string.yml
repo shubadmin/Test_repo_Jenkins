@@ -1,0 +1,13 @@
+---
+- hosts: myhosts
+  tasks:
+  - name: Change a string in file
+    replace:
+        path: /tmp/testfile
+        regexp: 'directory'
+        replace: 'file'
+
+# If you need to do a case-insensitive search then you can do something like below.  The ‘?i’ means it is a case sensitive replace.
+#
+# regexp: '(?i)hello'
+#
