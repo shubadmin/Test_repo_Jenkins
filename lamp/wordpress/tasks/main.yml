@@ -1,0 +1,5 @@
+---
+# tasks file for wordpress
+- include_tasks: setup.yml
+- include_tasks: db.yml
+- include_tasks: permission.yml 

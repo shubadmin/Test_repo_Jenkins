@@ -1,0 +1,4 @@
+---
+- hosts: myhosts
+  roles:
+  - apache2

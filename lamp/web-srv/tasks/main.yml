@@ -1,0 +1,5 @@
+---
+# tasks file for web-srv
+- import_tasks: install.yml
+- import_tasks: file.yml
+- import_tasks: service.yml

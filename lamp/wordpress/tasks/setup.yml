@@ -1,0 +1,29 @@
+---
+- name: install wordpress
+  get_url:
+      url:  http://wordpress.org/latest.tar.gz
+      dest: /root/
+
+- name: Extract Wordpress
+  unarchive:
+      src: "/root/wordpress-4.9.4.tar.gz"
+      dest: /root
+      remote_src: yes
+
+- name: move Wordpress install files
+  command: "{{ item }}"
+  with_items:
+  - mv  /root/wordpress/ /var/www/html
+  - mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+
+- name: Update WordPress config file
+  lineinfile:
+     dest: "/var/www/html/wordpress/wp-config.php"
+     regexp: "{{ item.regexp }}"
+     line: "{{ item.line }}"
+  with_items:
+  - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', 'wordpress');"}
+  - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', 'wpadmin');"}
+  - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', 'hrn@123');"}
+  notify:
+     restart apache

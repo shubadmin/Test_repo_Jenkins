@@ -1,0 +1,17 @@
+---
+- name: Add database
+  mysql_db:
+      name: wordpress
+      state: present
+      login_password: "{{MySQL_root_pass}}"
+      login_user: "root"
+
+- name: create db user
+  mysql_user:
+      name: wpadmin
+      password: 'hrn@123'
+      priv: 'wordpress.*:ALL'
+      state: present
+      login_password: "{{MySQL_root_pass}}"
+      login_user: "root"
+

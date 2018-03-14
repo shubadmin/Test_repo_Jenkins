@@ -1,0 +1,7 @@
+---
+- hosts: myhosts
+  roles:
+  - web-srv
+  - db
+  - wordpress
+
