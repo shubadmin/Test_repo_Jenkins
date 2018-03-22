@@ -1,0 +1,14 @@
+---
+- hosts: localhost
+  tasks:
+  - name: terminate instance
+    ec2:
+      region: us-east-2
+      state: 'absent'
+      instance_ids: "i-0a2edfbdf941e7a0b"
+      aws_access_key: "AKIAJQBMWSHPPGDE36LQ"
+      aws_secret_key: "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"
+
+
+
+
