@@ -5,9 +5,10 @@
      - name: insert a new line after pattern
        lineinfile:
              path: /tmp/testfile
-             line: alias ll= 'ls -lhA'
              insertafter: 'a test file'
+             line: alias ll= 'ls -lhA'
+     - name: insert new line before pattern
        lineinfile:
              path: /tmp/testfile
-             line: 'Shubham Agarwal'
              insertbefore: 'is a test file'
+             line: 'Shubham '
