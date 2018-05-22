@@ -1,0 +1,147 @@
+---
+- name: Install MySQL for production ready server
+  hosts: myhosts
+  vars_prompt:
+  - name: password
+    prompt: 'Enter MySql root password here'
+    private: yes
+  - name: db_password
+    prompt: "Enter DB user Password"
+    private: yes
+  vars:
+    MySQL_root_pass: "{{ password }}"
+    db_user_password: "{{ db_password}}"
+  tasks:
+  - name: install packages for Lamp
+    yum:
+     name: '{{ item }}'
+     state: latest
+    with_items:
+    - httpd
+    - mariadb
+    - mariadb-server
+    - php
+    - php-mysql
+    - php-pdo
+    - php-gd
+    - php-mbstring
+    - wget
+    - MySQL-python
+
+  - name: start service
+    service:
+      name: '{{ item.name }}'
+      state: '{{ item.state }}'
+      enabled: '{{ item.enabled }}'
+    with_items:
+    - { name: 'httpd', state: 'started', enabled: 'yes' }
+    - { name: 'mariadb', state: 'started', enabled: 'yes' }
+
+
+
+  - name: Adds Python MySQL support on RedHat/CentOS
+    yum: name=MySQL-python state=present
+
+  - name: Sets the root password 
+    mysql_user:
+       check_implicit_admin: yes
+       login_user: root
+       login_password: "{{ MySQL_root_pass }}" 
+       user: 'root'
+       password: "{{ MySQL_root_pass }}"
+       host: 'localhost'
+
+
+  - name: added entry in .my.cnf
+    copy:
+      dest: '/root/.my.cnf'
+      content: |
+          [client]
+          user=root
+          password= "{{ MySQL_root_pass }}" 
+
+  - name: Deletes anonymous MySQL server user for localhost
+    mysql_user:
+       user: "" 
+       state: "absent"
+       login_password: "{{ MySQL_root_pass }}"
+       login_user: "root"
+
+  - name: Secures the MySQL root user
+    mysql_user: 
+       user: "root" 
+       password: "{{ MySQL_root_pass }}"
+       host: "{{ item }}"
+       login_password: "{{MySQL_root_pass}}"
+       login_user: "root"
+    with_items:
+      - 127.0.0.1
+      - localhost
+      - ::1
+
+  - name: Removes the MySQL test database
+    mysql_db: 
+       db: 'test'
+       state: 'absent'
+       login_password: "{{ MySQL_root_pass }}"
+       login_user: 'root'
+
+  - name: Add database
+    mysql_db:
+        name: wordpress
+        state: present
+
+  - name: create db user
+    mysql_user:
+        name: wpadmin
+        password: "{{ db_user_password }}"
+        priv: 'wordpress.*:ALL'
+        state: present
+                                                       
+  - name: install wordpress
+    get_url:
+        url:  http://wordpress.org/latest.tar.gz
+        dest: /root/
+
+  - name: Extract Wordpress
+    unarchive:
+        src: "/root/wordpress-4.9.4.tar.gz"
+        dest: /root
+        remote_src: yes
+
+  - name: move Wordpress install files
+    command: "{{ item }}"
+    with_items:
+    - mv  /root/wordpress/ /var/www/html
+    - mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+
+  - name: Update WordPress config file
+    lineinfile:
+       dest: "/var/www/html/wordpress/wp-config.php"
+       regexp: "{{ item.regexp }}"
+       line: "{{ item.line }}"
+    with_items:
+    - {'regexp': "define\\('DB_NAME', '(.)+'\\);", 'line': "define('DB_NAME', 'wordpress');"}
+    - {'regexp': "define\\('DB_USER', '(.)+'\\);", 'line': "define('DB_USER', 'wpadmin');"}
+    - {'regexp': "define\\('DB_PASSWORD', '(.)+'\\);", 'line': "define('DB_PASSWORD', '{{ db_user_password }}');"}
+
+  - name: Change Ownership of files and dir
+    file:
+       dest: /var/www/html
+       owner: apache 
+       group: apache
+       recurse: yes
+
+  - name: Ensure directories are 0755
+    command: 
+       find  /var/www/html  -type d -exec chmod 0755 {} \;
+
+  - name: Ensure files are 0644
+    command: 
+       find  /var/www/html  -type f -exec chmod 0644 {} \;
+
+  - name: Restart Apache
+    service:
+       name: httpd
+       state: restarted
+
