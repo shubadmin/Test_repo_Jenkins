@@ -1,0 +1,33 @@
+---
+- hosts: myhosts
+  vars:
+    insert_block: 'server 0.in.pool.ntp.org
+                   server 3.asia.pool.ntp.org
+                   server 2.asia.pool.ntp.org'
+  tasks:
+  - name: install NTP 
+    yum:
+      name: ntp
+      state: latest
+    tags: install-NTP
+
+  - name: Comment lines in ntp.conf
+    replace: 
+       dest: /etc/ntp.conf
+       regexp: '^server' 
+       replace: '#server'
+    tags: Comment-line
+
+  - name: insert block 
+    lineinfile: 
+        path: /etc/ntp.conf
+        line: '{{ insert_block }}'
+        insertbefore: '^#broadcast 192.168.1.255 autokey'
+    tags: insert-block
+
+  - name: service start
+    service:
+        name: ntpd
+        state: restarted
+        enabled: yes
+    tags: start-service
