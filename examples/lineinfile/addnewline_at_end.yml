@@ -1,8 +1,0 @@
----
-- hosts: myhosts
-  tasks:
-     - name: insert a new line at the end
-       lineinfile:
-             path: '/tmp/testfile'
-             line: 'line added at last'
-             

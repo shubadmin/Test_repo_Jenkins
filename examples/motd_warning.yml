@@ -1,9 +1,0 @@
----
-- hosts: myhosts
-  vars:
-    motd_warning: 'WARNING: Do not change any thing withour Confirmation'
-  tasks:
-  - name: 
-    copy:
-      dest: /etc/motd
-      content: '{{ motd_warning }}'

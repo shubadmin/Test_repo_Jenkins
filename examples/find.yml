@@ -1,8 +1,0 @@
----
-- hosts: myhosts
-  tasks:
-  - name: find files
-    find:
-       paths: /etc/ansible/roles/examples
-       age: 5 
-       recurse: yes

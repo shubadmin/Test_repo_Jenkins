@@ -1,6 +1,0 @@
----
-# handlers file for web-srv
-- name: restart apache
-  service:
-    name: httpd
-    state: restarted

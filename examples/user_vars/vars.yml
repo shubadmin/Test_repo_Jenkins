@@ -1,4 +1,0 @@
----
-- hosts: myhosts
-  vars:
-     user_name: "Shubham_user"

@@ -1,8 +1,0 @@
----
-- hosts: myhosts
-  tasks:
-  - name: add a string
-    lineinfile:
-          path: '/tmp/shubham1'
-          line: 'This'
-          insertbefore: '^is'

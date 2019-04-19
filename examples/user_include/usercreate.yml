@@ -1,9 +1,0 @@
----
-- hosts: myhosts
-  user: root
-  tasks:
-    - include_tasks: user.yml user={{ item }}
-      with_items:
-      - shubham
-      - agarwal
-      - shubhamAgarwal

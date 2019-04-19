@@ -1,9 +1,0 @@
----
-- hosts: myhosts
-  vars_files:
-        "{{ /root/vars.yml }}"
-  tasks:
-  - name: create user for var file
-    user:
-      name: "{{ user_name  }}"
-      state: present

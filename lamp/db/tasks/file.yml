@@ -1,5 +1,0 @@
----
-- name: copy my.cnf
-  copy: 
-    src: files/my.cnf
-    dest: /root/.my.cnf

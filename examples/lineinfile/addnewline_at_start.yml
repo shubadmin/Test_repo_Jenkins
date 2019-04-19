@@ -1,8 +1,0 @@
----
-- hosts: myhosts
-  tasks:
-     - name: insert a new line at the start point
-       lineinfile:
-             path: '/tmp/testfile'
-             line: 'New line added'
-             insertbefore: BOF

@@ -1,7 +1,0 @@
----
-- hosts: myhosts
-  tasks:
-  - name: remove string
-    replace:
-       path: '/tmp/shubham1'
-       regexp: '^This'

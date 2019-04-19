@@ -1,7 +1,0 @@
----
-# tasks file for db
-
-- include_tasks: install.yml
-- include_tasks: service.yml
-- include_tasks: file.yml
-- include_tasks: dbsetup.yml
